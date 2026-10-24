@@ -1,28 +1,36 @@
-﻿using Data.Mapping;
-using DataBase.Scheme;
+﻿using PetProject.Data.Mapping;
+using PetProject.DataBase.Scheme;
 using Npgsql;
 using System.Collections.Concurrent;
 using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using PetProject.Repositories;
+using PetProject.DataBase.Scheme.Entities;
 
-namespace DataBase.Scheme
+namespace PetProject.DataBase.Scheme
 {
     public class RelationalRepositoryScheme : ISchemeRepository
     {
-        private static readonly string connectionString2 = "Host=localhost;Port=5433;UserId=postgres;Password=DA13q30by20NAT156;Database=Finances;";
-        private ConcurrentDictionary<ValidTable, bool> ValidTables = new();//В дальнейшем можно заменить на хэширование в отдельном приложении
+        private readonly string _connectionString;
+
+        private ConcurrentDictionary<ValidTable, bool> _validTables = new();
+
+        public RelationalRepositoryScheme(string connection)
+        {
+            _connectionString = connection;
+        }
 
         public async Task<List<ValidTable>> GetValidTablesAsync()
         {
-            if (ValidTables.Any())
+            if (_validTables.Any())
             {
-                return ValidTables.Select(table => table.Key).ToList();
+                return _validTables.Select(table => table.Key).ToList();
             }
 
             await UploadValidTablesAsync();
 
-            return ValidTables.Select(table => table.Key).ToList();
+            return _validTables.Select(table => table.Key).ToList();
         }
 
         public async Task<List<string>> GetValidColumnsAsync(ValidTable validTable)
@@ -44,7 +52,7 @@ namespace DataBase.Scheme
 
         private async Task UploadValidTablesAsync()
         {
-            await using var connection = new NpgsqlConnection(connectionString2);
+            await using var connection = new NpgsqlConnection(connectionString);
             string query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'";
             await connection.OpenAsync();
             await using var command = new NpgsqlCommand(query, connection);
@@ -52,17 +60,17 @@ namespace DataBase.Scheme
 
             while (await reader.ReadAsync())
             {
-                if (!ValidTables.Keys.Any(table => table.TableName == reader.GetString("table_name")))
+                if (!_validTables.Keys.Any(table => table.TableName == reader.GetString("table_name")))
                 {
-                    ValidTable validTable = new(reader.GetString("table_name"), new ConcurrentDictionary<string, bool> ());
-                    ValidTables[validTable] = true;
+                    ValidTable validTable = new ValidTable(reader.GetString("table_name"));
+                    _validTables[validTable] = true;
                 }
             }
         }
 
         private async Task UploadValidColumnsAsync(ValidTable validTable)
         {
-            await using var connection = new NpgsqlConnection(connectionString2);
+            await using var connection = new NpgsqlConnection(_connectionString);
             string query = "SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = @tableName;";
             await connection.OpenAsync();
             await using var command = new NpgsqlCommand(query, connection);
@@ -75,22 +83,4 @@ namespace DataBase.Scheme
             }
         }
     }
-
-    /*
-    public class ValidTable
-    {
-        public string TableName { get; set; }
-        public ConcurrentDictionary<string, bool> ValidColumns;
-        public ValidTable()
-        {
-            TableName = "";
-            ValidColumns = new ConcurrentDictionary<string, bool>();
-        }
-        public ValidTable(string tableName)
-        {
-            TableName = tableName;
-            ValidColumns = new ConcurrentDictionary<string, bool>();
-        }
-    }
-    */
 }

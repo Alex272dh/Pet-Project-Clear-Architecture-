@@ -1,9 +1,11 @@
 ﻿using System.Collections.Concurrent;
+using PetProject.DataBase.Scheme.Entities;
 
-public interface ISchemeRepository
+namespace PetProject.Repositories
 {
-    Task<List<ValidTable>> GetValidTablesAsync();
-    Task<List<string>> GetValidColumnsAsync(ValidTable table);
+    public interface ISchemeRepository
+    {
+        Task<List<ValidTable>> GetValidTablesAsync();
+        Task<List<string>> GetValidColumnsAsync(ValidTable table);
+    }
 }
-
-public record ValidTable(string TableName, ConcurrentDictionary<string, bool> ValidColumns);

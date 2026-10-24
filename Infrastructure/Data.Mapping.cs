@@ -1,5 +1,4 @@
-﻿// Seusing DataImport.Mapping;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Data.Mapping
+namespace PetProject.Data.Mapping
 {
     public class Column
     {
