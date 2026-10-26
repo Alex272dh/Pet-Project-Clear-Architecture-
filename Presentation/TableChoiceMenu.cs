@@ -1,17 +1,25 @@
-﻿using PetProject.MenuItemBaseInterface;
+﻿using PetProject.DataBase.Scheme;
+using PetProject.DataBase.Scheme.Entities;
+using PetProject.MenuItemBaseInterface;
+using PetProject.UIDataInputMenu;
 using PetProject.UIMenuBase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
-using PetProject.DataBase.Scheme;
 
 namespace PetProject.UITableChoiceMenu
 {
     public sealed class TableChoiceMenu : MenuBase
     {
-        public override List<IMenuItemBase> MenuItems { get; } = new List<IMenuItemBase>{};
+        public override List<IMenuItemBase> MenuItems { get; } = new List<IMenuItemBase>();
+        
+        public void CreateMenuItem(string title)
+        {
+            MenuItems.Add(new MenuActionItem(title, () => new DataInputMenu()));
+        }
 
         public override void Display()
         {

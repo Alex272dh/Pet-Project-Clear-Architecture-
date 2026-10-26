@@ -1,9 +1,9 @@
 ﻿using PetProject.Data.Mapping;
 using OfficeOpenXml;
 
-namespace PetProject.ExcelParser
+namespace PetProject.Parsers
 {
-    public class ExcelParser
+    public class Parsers
     {
         public Table Parse(Table parsedTable, string filePath)
         {
@@ -11,6 +11,7 @@ namespace PetProject.ExcelParser
 
             //Чтение файла
             using var package = new ExcelPackage(new FileInfo(filePath));
+
             //Здесь предполагается, что в Excel гарантированно только один лист
             var worksheets = package.Workbook.Worksheets[0];
             int maxRows = worksheets.Dimension?.End.Row ?? 0;

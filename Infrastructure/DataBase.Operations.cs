@@ -7,7 +7,7 @@ namespace PetProject.DataBase
     public class DataBase
     {
         //Добавить в среду, и забирать параметры подключения только из среды
-        private readonly string _connectionString; // "Host=localhost;Port=5433;UserId=postgres;Password=DA13q30by20NAT156;Database=Finances;"
+        private readonly string _connectionString;
 
         public DataBase(string connectionString)
         {

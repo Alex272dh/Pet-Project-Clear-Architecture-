@@ -1,17 +1,23 @@
 ﻿using PetProject.MenuInputItemInterface;
 using PetProject.MenuItemBaseInterface;
+using PetProject.UIDataInputMenu;
+using PetProject.UIMenuBase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PetProject.UIMenuBase;
 
 namespace PetProject.UIDataTypeInputMenu
 {
     public class DataTypeInputMenu : MenuBase
     {
         public override List<IMenuItemBase> MenuItems { get; } = new List<IMenuItemBase> { };
+
+        public void CreateMenuItem(string title)
+        {
+            MenuItems.Add(new MenuInputItem("> " + title + "(тип значения): "));
+        }
 
         public override void Display()
         {
@@ -34,16 +40,14 @@ namespace PetProject.UIDataTypeInputMenu
             DisplayString("", ref contentsHeight);
             DisplayString("Столбцы таблицы:", ref contentsHeight);
 
-            string typeTitle = "(тип значения): ";
-
             foreach (var item in MenuItems)
             {
-                DisplayString(item.Title + typeTitle, ref contentsHeight);
+                DisplayString(item.Title, ref contentsHeight);
             }
 
             while (true)
             {
-                inputStart = MenuItems[selected].Title.Length + typeTitle.Length;
+                inputStart = MenuItems[selected].Title.Length;
                 Console.SetCursorPosition(inputStart + cursorPosition, selected + contentsHeight);
 
                 var input = Console.ReadKey(intercept: true);

@@ -15,6 +15,11 @@ namespace PetProject.UIDataInputMenu
     {
         public override List<IMenuItemBase> MenuItems { get; } = new List<IMenuItemBase>{};
 
+        public void CreateMenuItem(string title)
+        {
+            MenuItems.Add(new MenuInputItem("> " + title + ": "));
+        }
+
         public override void Display()
         {
             int inputStart = 0;
@@ -32,7 +37,7 @@ namespace PetProject.UIDataInputMenu
 
             foreach (var item in MenuItems)
             {
-                Console.WriteLine("> " + item.Title + ":");
+                Console.WriteLine(item.Title);
             }
 
             int commonHeight = contentsHeight + MenuItems.Count;

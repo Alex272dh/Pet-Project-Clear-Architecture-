@@ -10,13 +10,13 @@ using PetProject.DataBase.Scheme.Entities;
 
 namespace PetProject.DataBase.Scheme
 {
-    public class RelationalRepositoryScheme : ISchemeRepository
+    public class RelationalRepository : IRepository
     {
         private readonly string _connectionString;
 
         private ConcurrentDictionary<ValidTable, bool> _validTables = new();
 
-        public RelationalRepositoryScheme(string connection)
+        public RelationalRepository(string connection)
         {
             _connectionString = connection;
         }
@@ -52,7 +52,7 @@ namespace PetProject.DataBase.Scheme
 
         private async Task UploadValidTablesAsync()
         {
-            await using var connection = new NpgsqlConnection(connectionString);
+            await using var connection = new NpgsqlConnection(_connectionString);
             string query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'";
             await connection.OpenAsync();
             await using var command = new NpgsqlCommand(query, connection);
@@ -60,7 +60,7 @@ namespace PetProject.DataBase.Scheme
 
             while (await reader.ReadAsync())
             {
-                if (!_validTables.Keys.Any(table => table.TableName == reader.GetString("table_name")))
+                if (!_validTables.Keys.Any(table => table.Title == reader.GetString("table_name")))
                 {
                     ValidTable validTable = new ValidTable(reader.GetString("table_name"));
                     _validTables[validTable] = true;
@@ -74,7 +74,7 @@ namespace PetProject.DataBase.Scheme
             string query = "SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = @tableName;";
             await connection.OpenAsync();
             await using var command = new NpgsqlCommand(query, connection);
-            command.Parameters.AddWithValue("@tableName", validTable.TableName);
+            command.Parameters.AddWithValue("@tableName", validTable.Title);
             var reader = await command.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())

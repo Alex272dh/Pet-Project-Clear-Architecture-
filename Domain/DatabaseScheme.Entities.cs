@@ -4,12 +4,12 @@ namespace PetProject.DataBase.Scheme.Entities
 {
     public class ValidTable
     {
-        public string TableName { get; private set; }
+        public string Title { get; private set; }
         public ConcurrentDictionary<string, bool> ValidColumns { get; private set; }= new ConcurrentDictionary<string, bool>();
 
-        public ValidTable(string tableName)
+        public ValidTable(string title)
         {
-            TableName = tableName;
+            Title = title;
         }
     };
 }

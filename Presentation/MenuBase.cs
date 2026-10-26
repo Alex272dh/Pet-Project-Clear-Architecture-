@@ -13,7 +13,10 @@ namespace PetProject.UIMenuBase
     public abstract class MenuBase : IMenuBase
     {
         public abstract List<IMenuItemBase> MenuItems { get; }
+
         public abstract void Display();
+
+
         protected class MenuInputItem : IMenuInputItem
         {
             public static Dictionary<char, Type> AllowedDataTypes = new Dictionary<char, Type>

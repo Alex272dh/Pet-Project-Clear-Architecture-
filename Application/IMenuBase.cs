@@ -4,7 +4,8 @@ namespace PetProject.MenuBaseInterface
 {
     public interface IMenuBase
     {
-        public List<IMenuItemBase> MenuItems { get; }
+        List<IMenuItemBase> MenuItems { get; }
+
         public void Display();
     }
 }
